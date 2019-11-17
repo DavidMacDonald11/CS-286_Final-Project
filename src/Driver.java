@@ -1,3 +1,5 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -9,21 +11,31 @@ public final class Driver {
 		Scanner scnr = new Scanner(System.in);
 		String input = "";
 		
-		Database db = new Database("weather_station.db");
+		Database db = new Database("weather_stations.db");
+		db.connect();
 		
 		do {
-			System.out.println("Attempting to connect to db...");
-			db.connect();
+			System.out.println("Testing...\n");
 			
-			System.out.println("\nAttempting to close db...");
-			db.close();
+			ResultSet rs = db.command("SELECT * FROM Station_Data");
 			
-			System.out.print("\nWould you like to go again? (y/n): ");
+			try {
+				System.out.println(rs.getString(1));
+				rs.getStatement().close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.print("Would you like to go again? (y/n): ");
 			input = scnr.nextLine().toLowerCase();
+			
+			System.out.println();
 		} while(input.charAt(0) == 'y');
 		
-		System.out.println("Goodbye!");
+		db.close();
 		scnr.close();
+		
+		System.out.println("Goodbye!");
 	}
 	
 	private Driver() {}

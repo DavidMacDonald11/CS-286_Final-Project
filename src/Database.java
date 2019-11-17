@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Allows your program to connect to an sql database.
@@ -9,10 +11,12 @@ import java.sql.SQLException;
  * @version November 17, 2019
  */
 public class Database {
+	private final String PATH;
 	private final String URL;
 	private Connection conn;
 	
 	public Database(String dbPath) {
+		PATH = dbPath;
 		URL = "jdbc:sqlite:" + dbPath;
 	}
 	
@@ -25,7 +29,7 @@ public class Database {
 				conn = DriverManager.getConnection(URL);
 			}
 			
-			System.out.println("Connected.");
+			System.out.println("Connected to " + PATH);
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -38,9 +42,21 @@ public class Database {
 		try {
 			if(conn != null) { conn.close(); }
 			
-			System.out.println("Closed.");
+			System.out.println("Closed " + PATH);
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
+		}
+	}
+	
+	public ResultSet command(String sql) {
+		try {
+			Statement toSend = conn.createStatement();
+			toSend.execute(sql);
+			return toSend.getResultSet();
+			
+		} catch(SQLException e) {
+			System.out.println(e.getMessage());
+			return null;
 		}
 	}
 }
