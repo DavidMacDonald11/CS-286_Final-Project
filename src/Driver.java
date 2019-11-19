@@ -1,4 +1,5 @@
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -17,16 +18,43 @@ public final class Driver {
 		do {
 			System.out.println("Testing...\n");
 			
-			ResultSet rs = db.command("SELECT * FROM Station_Data");
-			
 			try {
-				System.out.println(rs.getString(1));
+				ResultSet rs = db.command("SELECT * FROM Station_Data");
+				rs.next();
+				
+				ResultSetMetaData rsmd = rs.getMetaData();
+				String toPrint = "";
+				
+				for(int i = 1; toPrint != null && i < 18; i++) {
+					toPrint = rsmd.getColumnName(i);
+					
+					if(toPrint == null) { break; }
+					System.out.print(toPrint + "  ");
+				}
+				
+				System.out.println("\n\nWaiting...");
+				scnr.nextLine();
+				
+				
+				do {
+					toPrint = "";
+					
+					for(int i = 1; toPrint != null && i < 18; i++) {
+						toPrint = rs.getString(i);
+						
+						if(toPrint == null) { break; }
+						System.out.print(toPrint + "  ");
+					}
+					
+					System.out.println();
+				} while(rs.next());
+				
 				rs.getStatement().close();
 			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 			
-			System.out.print("Would you like to go again? (y/n): ");
+			System.out.print("\n\nWould you like to go again? (y/n): ");
 			input = scnr.nextLine().toLowerCase();
 			
 			System.out.println();

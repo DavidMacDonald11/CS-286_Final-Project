@@ -53,7 +53,6 @@ public class Database {
 			Statement toSend = conn.createStatement();
 			toSend.execute(sql);
 			return toSend.getResultSet();
-			
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
 			return null;
