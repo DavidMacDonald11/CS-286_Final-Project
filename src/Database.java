@@ -1,6 +1,5 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -48,11 +47,12 @@ public class Database {
 		}
 	}
 	
-	public ResultSet command(String sql) {
+	public HelpfulResultSet command(String sql) {
 		try {
 			Statement toSend = conn.createStatement();
 			toSend.execute(sql);
-			return toSend.getResultSet();
+			
+			return new HelpfulResultSet(toSend.getResultSet());
 		} catch(SQLException e) {
 			System.out.println(e.getMessage());
 			return null;
